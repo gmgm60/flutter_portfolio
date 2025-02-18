@@ -20,6 +20,8 @@ class ProjectEntity with _$ProjectEntity {
     bool? featured,
   }) = _ProjectEntity;
 
+const ProjectEntity._();
+
   factory ProjectEntity.fromJson(Map<String, dynamic> json) =>
       _$ProjectEntityFromJson(json);
 }

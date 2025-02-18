@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:portfolio/domain/entities/project_entity.dart';
 
-class Project {
+class ProjectModel  {
   final String id;
   final String title;
   final String description;
@@ -10,7 +11,7 @@ class Project {
   final String? liveUrl;
   final DateTime createdAt;
 
-  const Project({
+  const ProjectModel({
     required this.id,
     required this.title,
     required this.description,
@@ -21,16 +22,18 @@ class Project {
     required this.createdAt,
   });
 
-  factory Project.fromFirestore(DocumentSnapshot doc) {
+  String get projectUrl => liveUrl ?? '';
+
+  factory ProjectModel.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
-    return Project(
+    return ProjectModel(
       id: doc.id,
       title: data['title'] ?? '',
       description: data['description'] ?? '',
       imageUrl: data['imageUrl'] ?? '',
       technologies: List<String>.from(data['technologies'] ?? []),
       githubUrl: data['githubUrl'] ?? '',
-      liveUrl: data['projectUrl'],
+      liveUrl: data['liveUrl'],
       createdAt: (data['createdAt'] as Timestamp).toDate(),
     );
   }
@@ -42,28 +45,21 @@ class Project {
       'imageUrl': imageUrl,
       'technologies': technologies,
       'githubUrl': githubUrl,
-      'projectUrl': liveUrl,
+      'liveUrl': liveUrl,
       'createdAt': Timestamp.fromDate(createdAt),
     };
   }
 
-  Project copyWith({
-    String? title,
-    String? description,
-    String? imageUrl,
-    List<String>? technologies,
-    String? githubUrl,
-    String? liveUrl,
-  }) {
-    return Project(
-      id: id,
-      title: title ?? this.title,
-      description: description ?? this.description,
-      imageUrl: imageUrl ?? this.imageUrl,
-      technologies: technologies ?? this.technologies,
-      githubUrl: githubUrl ?? this.githubUrl,
-      liveUrl: liveUrl ?? this.liveUrl,
-      createdAt: createdAt,
+  factory ProjectModel.fromEntity(ProjectEntity entity) {
+    return ProjectModel(
+      id: entity.id,
+      title: entity.title,
+      description: entity.description,
+      imageUrl: entity.imageUrl ?? '',
+      technologies: entity.technologies,
+      githubUrl: entity.githubUrl ?? '',
+      liveUrl: entity.projectUrl,
+      createdAt: entity.createdAt,
     );
   }
 }
