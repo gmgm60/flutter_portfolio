@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:portfolio/core/error/app_error.dart';
 import 'package:portfolio/domain/entities/project_entity.dart';
 import 'package:portfolio/domain/repositories/project_repository.dart';
 
