@@ -86,7 +86,7 @@ class FirebaseBlogDataSourceImpl implements FirebaseBlogDataSource {
     final snapshot = await _firestore
         .collection(_collection)
         .where('title', isGreaterThanOrEqualTo: query)
-        .where('title', isLessThanOrEqualTo: query + '\uf8ff')
+        .where('title', isLessThanOrEqualTo: '$query\uf8ff')
         .get();
 
     return snapshot.docs
