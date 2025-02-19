@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:portfolio/core/firebase/firebase_service.dart';
 import 'package:portfolio/presentation/features/about/screens/about_screen.dart';
 import 'package:portfolio/presentation/features/admin/screens/admin_login_screen.dart';
 import 'package:portfolio/presentation/features/blog/screens/blog_screen.dart';
@@ -8,7 +9,9 @@ import 'package:portfolio/presentation/features/contact/screens/contact_screen.d
 import 'package:portfolio/presentation/features/home/screens/home_screen.dart';
 import 'package:portfolio/presentation/features/projects/screens/projects_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await FirebaseService().init();
   runApp(const ProviderScope(child: MyApp()));
 }
 
