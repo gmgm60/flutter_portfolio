@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:portfolio/domain/entities/project.dart';
 import 'package:portfolio/presentation/features/admin/providers/project_provider.dart';
 
@@ -29,7 +30,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
             icon: const Icon(Icons.logout),
             onPressed: () {
               // TODO: Implement logout
-              Navigator.of(context).pushReplacementNamed('/admin/login');
+              context.go('/admin/login');
             },
           ),
         ],

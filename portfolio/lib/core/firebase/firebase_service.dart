@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:injectable/injectable.dart';
-import 'package:portfolio/core/firebase/firebase_options.dart';
+import 'package:portfolio/firebase_options.dart';
 
 /// Service class to handle Firebase initialization and provide access to Firebase services
 @singleton

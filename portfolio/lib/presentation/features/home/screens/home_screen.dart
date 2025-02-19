@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:portfolio/presentation/common/widgets/app_bar.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -48,28 +49,28 @@ class HomeScreen extends ConsumerWidget {
                     Icons.work,
                     'Projects',
                     'Explore my latest work and projects',
-                    () => Navigator.pushNamed(context, '/projects'),
+                    () => context.go('/projects'),
                   ),
                   _buildFeatureCard(
                     context,
                     Icons.article,
                     'Blog',
                     'Read my thoughts on technology and development',
-                    () => Navigator.pushNamed(context, '/blog'),
+                    () => context.go('/blog'),
                   ),
                   _buildFeatureCard(
                     context,
                     Icons.person,
                     'About Me',
                     'Learn more about my journey and skills',
-                    () => Navigator.pushNamed(context, '/about'),
+                    () => context.go('/about'),
                   ),
                   _buildFeatureCard(
                     context,
                     Icons.contact_mail,
                     'Contact',
                     'Get in touch with me',
-                    () => Navigator.pushNamed(context, '/contact'),
+                    () => context.go('/contact'),
                   ),
                 ],
               ),

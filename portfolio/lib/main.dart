@@ -1,7 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_web_plugins/flutter_web_plugins.dart';
+import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:portfolio/core/firebase/firebase_service.dart';
 import 'package:portfolio/presentation/features/about/screens/about_screen.dart';
 import 'package:portfolio/presentation/features/admin/screens/admin_login_screen.dart';
@@ -12,7 +13,7 @@ import 'package:portfolio/presentation/features/projects/screens/projects_screen
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  usePathUrlStrategy();
+    usePathUrlStrategy();
   await FirebaseService().init();
   runApp(const ProviderScope(child: MyApp()));
 }
