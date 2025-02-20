@@ -60,6 +60,17 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       routerConfig: _router,
+      builder: (context, child) {
+        return Scaffold(
+          body: child,
+          floatingActionButton: kDebugMode
+              ? FloatingActionButton(
+                  onPressed: () => _router.go('/admin'),
+                  child: const Icon(Icons.admin_panel_settings),
+                )
+              : null,
+        );
+      },
     );
   }
 }
