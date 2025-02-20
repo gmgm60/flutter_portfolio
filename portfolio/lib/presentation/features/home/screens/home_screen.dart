@@ -10,76 +10,155 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: const PortfolioAppBar(),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Hero(
-                tag: 'profile',
-                child: CircleAvatar(
-                  radius: 60,
-                  backgroundImage: AssetImage('assets/images/profile.jpg'),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final isDesktop = constraints.maxWidth > 900;
+          final isTablet = constraints.maxWidth > 600 && constraints.maxWidth <= 900;
+
+          return SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.all(isDesktop ? 48.0 : 24.0),
+              child: Center(
+                child: Container(
+                  constraints: BoxConstraints(maxWidth: isDesktop ? 1200 : double.infinity),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (isDesktop) const SizedBox(height: 48),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            flex: isDesktop ? 2 : 1,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Hero(
+                                  tag: 'profile',
+                                  child: CircleAvatar(
+                                    radius: 60,
+                                    backgroundImage: AssetImage('assets/images/profile.jpg'),
+                                  ),
+                                ),
+                                const SizedBox(height: 24),
+                                Text(
+                                  'Welcome to My Portfolio',
+                                  style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                                    fontSize: isDesktop ? 48 : (isTablet ? 36 : 32),
+                                  ),
+                                ),
+                                const SizedBox(height: 16),
+                                Text(
+                                  'Full Stack Developer & UI/UX Designer',
+                                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                    fontSize: isDesktop ? 24 : 20,
+                                  ),
+                                ),
+                                const SizedBox(height: 32),
+                                Text(
+                                  'I create beautiful and functional applications with Flutter and modern web technologies. '
+                                  'With a passion for clean code and user-centric design, I help businesses bring their ideas to life.',
+                                  style: TextStyle(fontSize: isDesktop ? 18 : 16, height: 1.6),
+                                ),
+                              ],
+                            ),
+                          ),
+                          if (isDesktop || isTablet) ...[                            
+                            const SizedBox(width: 48),
+                            Expanded(
+                              child: Container(
+                                padding: const EdgeInsets.all(24),
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).colorScheme.surfaceVariant,
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Quick Links',
+                                      style: Theme.of(context).textTheme.titleLarge,
+                                    ),
+                                    const SizedBox(height: 16),
+                                    _QuickLinkButton(
+                                      icon: Icons.work,
+                                      label: 'View Projects',
+                                      onTap: () => context.go('/projects'),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    _QuickLinkButton(
+                                      icon: Icons.article,
+                                      label: 'Read Blog',
+                                      onTap: () => context.go('/blog'),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    _QuickLinkButton(
+                                      icon: Icons.contact_mail,
+                                      label: 'Contact Me',
+                                      onTap: () => context.go('/contact'),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                      if (!isDesktop && !isTablet) ...[                        
+                        const SizedBox(height: 32),
+                        _QuickLinkButton(
+                          icon: Icons.work,
+                          label: 'View Projects',
+                          onTap: () => context.go('/projects'),
+                        ),
+                        const SizedBox(height: 8),
+                        _QuickLinkButton(
+                          icon: Icons.article,
+                          label: 'Read Blog',
+                          onTap: () => context.go('/blog'),
+                        ),
+                        const SizedBox(height: 8),
+                        _QuickLinkButton(
+                          icon: Icons.contact_mail,
+                          label: 'Contact Me',
+                          onTap: () => context.go('/contact'),
+                        ),
+                      ],
+                    ],
+                  ),
                 ),
               ),
-              const SizedBox(height: 24),
-              Text(
-                'Welcome to My Portfolio',
-                style: Theme.of(context).textTheme.headlineLarge,
-              ),
-              const SizedBox(height: 16),
-              Text(
-                'Full Stack Developer & UI/UX Designer',
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              const SizedBox(height: 32),
-              const Text(
-                'I create beautiful and functional applications with Flutter and modern web technologies. '
-                'With a passion for clean code and user-centric design, I help businesses bring their ideas to life.',
-                style: TextStyle(fontSize: 16, height: 1.6),
-              ),
-              const SizedBox(height: 48),
-              Wrap(
-                spacing: 16,
-                runSpacing: 16,
-                children: [
-                  _buildFeatureCard(
-                    context,
-                    Icons.work,
-                    'Projects',
-                    'Explore my latest work and projects',
-                    () => context.go('/projects'),
-                  ),
-                  _buildFeatureCard(
-                    context,
-                    Icons.article,
-                    'Blog',
-                    'Read my thoughts on technology and development',
-                    () => context.go('/blog'),
-                  ),
-                  _buildFeatureCard(
-                    context,
-                    Icons.person,
-                    'About Me',
-                    'Learn more about my journey and skills',
-                    () => context.go('/about'),
-                  ),
-                  _buildFeatureCard(
-                    context,
-                    Icons.contact_mail,
-                    'Contact',
-                    'Get in touch with me',
-                    () => context.go('/contact'),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }
+}
+
+class _QuickLinkButton extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+
+  const _QuickLinkButton({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton.icon(
+      onPressed: onTap,
+      icon: Icon(icon),
+      label: Text(label),
+      style: ElevatedButton.styleFrom(
+        minimumSize: const Size(double.infinity, 48),
+      ),
+    );
+  }
+}
 
   Widget _buildFeatureCard(
     BuildContext context,
@@ -115,4 +194,3 @@ class HomeScreen extends ConsumerWidget {
       ),
     );
   }
-}

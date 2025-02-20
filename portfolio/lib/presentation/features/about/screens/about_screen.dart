@@ -9,88 +9,114 @@ class AboutScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: const PortfolioAppBar(),
-      body: SingleChildScrollView(
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final isDesktop = constraints.maxWidth > 900;
+          final isTablet = constraints.maxWidth > 600 && constraints.maxWidth <= 900;
+
+          return SingleChildScrollView(
+            padding: EdgeInsets.all(isDesktop ? 48.0 : 24.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'About Me',
+                  style: Theme.of(context).textTheme.headlineLarge,
+                ),
+                const SizedBox(height: 32),
+                if (isDesktop)
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: _buildMainContent(context),
+                      ),
+                      const SizedBox(width: 48),
+                      Expanded(
+                        child: _buildProfileCard(context),
+                      ),
+                    ],
+                  )
+                else
+                  Column(
+                    children: [
+                      _buildProfileCard(context),
+                      const SizedBox(height: 32),
+                      _buildMainContent(context),
+                    ],
+                  ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildMainContent(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'I am a passionate software developer with expertise in Flutter, Firebase, and modern web technologies. '
+          'With years of experience in building cross-platform applications, I focus on creating elegant solutions that solve real-world problems.',
+          style: TextStyle(fontSize: 16, height: 1.6),
+        ),
+        const SizedBox(height: 32),
+        Text(
+          'Skills',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+        const SizedBox(height: 16),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: _skills.map((skill) => _SkillChip(skill)).toList(),
+        ),
+        const SizedBox(height: 32),
+        Text(
+          'Experience',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+        const SizedBox(height: 16),
+        ..._experiences.map((exp) => _ExperienceCard(experience: exp)),
+      ],
+    );
+  }
+
+  Widget _buildProfileCard(BuildContext context) {
+    return Card(
+      child: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'About Me',
-              style: Theme.of(context).textTheme.headlineLarge,
+            const Center(
+              child: CircleAvatar(
+                radius: 80,
+                backgroundImage: AssetImage('assets/images/profile.jpg'),
+              ),
             ),
-            const SizedBox(height: 32),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'I am a passionate software developer with expertise in Flutter, Firebase, and modern web technologies. '
-                        'With years of experience in building cross-platform applications, I focus on creating elegant solutions that solve real-world problems.',
-                        style: TextStyle(fontSize: 16, height: 1.6),
-                      ),
-                      const SizedBox(height: 32),
-                      Text(
-                        'Skills',
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                      const SizedBox(height: 16),
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: _skills.map((skill) => _SkillChip(skill)).toList(),
-                      ),
-                      const SizedBox(height: 32),
-                      Text(
-                        'Experience',
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                      const SizedBox(height: 16),
-                      ..._experiences.map((exp) => _ExperienceCard(experience: exp)),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 48),
-                Expanded(
-                  child: Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(24.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const CircleAvatar(
-                            radius: 80,
-                            backgroundImage: AssetImage('assets/images/profile.jpg'),
-                          ),
-                          const SizedBox(height: 24),
-                          Text(
-                            'John Doe',
-                            style: Theme.of(context).textTheme.headlineSmall,
-                          ),
-                          const SizedBox(height: 8),
-                          const Text('Full Stack Developer'),
-                          const SizedBox(height: 16),
-                          const _ContactItem(
-                            icon: Icons.email,
-                            text: 'john@example.com',
-                          ),
-                          const _ContactItem(
-                            icon: Icons.location_on,
-                            text: 'San Francisco, CA',
-                          ),
-                          const _ContactItem(
-                            icon: Icons.link,
-                            text: 'github.com/johndoe',
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+            const SizedBox(height: 24),
+            Text(
+              'John Doe',
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
+            const SizedBox(height: 8),
+            const Text('Full Stack Developer'),
+            const SizedBox(height: 16),
+            const _ContactItem(
+              icon: Icons.email,
+              text: 'john@example.com',
+            ),
+            const _ContactItem(
+              icon: Icons.location_on,
+              text: 'San Francisco, CA',
+            ),
+            const _ContactItem(
+              icon: Icons.link,
+              text: 'github.com/johndoe',
             ),
           ],
         ),

@@ -9,40 +9,55 @@ class ProjectsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: const PortfolioAppBar(),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'My Projects',
-              style: Theme.of(context).textTheme.headlineLarge,
-            ),
-            const SizedBox(height: 32),
-            GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 24,
-                mainAxisSpacing: 24,
-                childAspectRatio: 1.5,
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final isDesktop = constraints.maxWidth > 900;
+          final isTablet = constraints.maxWidth > 600 && constraints.maxWidth <= 900;
+          final crossAxisCount = isDesktop ? 3 : (isTablet ? 2 : 1);
+
+          return SingleChildScrollView(
+            padding: EdgeInsets.all(isDesktop ? 48.0 : 24.0),
+            child: Center(
+              child: Container(
+                constraints: BoxConstraints(maxWidth: isDesktop ? 1200 : double.infinity),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'My Projects',
+                      style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                        fontSize: isDesktop ? 48 : (isTablet ? 36 : 32),
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+                    GridView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: crossAxisCount,
+                        crossAxisSpacing: 24,
+                        mainAxisSpacing: 24,
+                        childAspectRatio: isDesktop ? 1.5 : 1.2,
+                      ),
+                      itemCount: _mockProjects.length,
+                      itemBuilder: (context, index) {
+                        final project = _mockProjects[index];
+                        return _ProjectCard(
+                          title: project.title,
+                          description: project.description,
+                          imageUrl: project.imageUrl,
+                          onTap: () {
+                            // TODO: Navigate to project details
+                          },
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ),
-              itemCount: _mockProjects.length,
-              itemBuilder: (context, index) {
-                final project = _mockProjects[index];
-                return _ProjectCard(
-                  title: project.title,
-                  description: project.description,
-                  imageUrl: project.imageUrl,
-                  onTap: () {
-                    // TODO: Navigate to project details
-                  },
-                );
-              },
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
