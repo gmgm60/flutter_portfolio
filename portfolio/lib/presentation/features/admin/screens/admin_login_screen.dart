@@ -2,7 +2,9 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:portfolio/core/firebase/firebase_auth.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class AdminLoginScreen extends ConsumerStatefulWidget {
   const AdminLoginScreen({super.key});
@@ -70,11 +72,11 @@ class _AdminLoginScreenState extends ConsumerState<AdminLoginScreen> {
                         : const Text('Login'),
                   ),
                 ),
-                const SizedBox(height: 16),
-                OutlinedButton.icon(
+                const SizedBox(height: 16), 
+                OutlinedButton.icon( 
                   onPressed: _isLoading ? null : _handleGoogleSignIn,
-                  icon: Image.network(
-                    'https://www.google.com/favicon.ico',
+                  icon: SvgPicture.asset(
+                    "assets/icons/google.svg",
                     height: 24,
                   ),
                   label: const Text('Sign in with Google'),
@@ -109,9 +111,10 @@ class _AdminLoginScreenState extends ConsumerState<AdminLoginScreen> {
           password: _passwordController.text,
         );
         if (mounted) {
-          Navigator.pushReplacementNamed(context, '/admin/dashboard');
+          context.go('/admin/dashboard');
         }
-      } catch (e) {
+      } catch (e,st) {
+        log("error",error: e,stackTrace: st, name: "Login");
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Login failed: ${e.toString()}')),
@@ -131,7 +134,7 @@ class _AdminLoginScreenState extends ConsumerState<AdminLoginScreen> {
       final authService = ref.read(firebaseAuthServiceProvider);
       await authService.signInWithGoogle();
       if (mounted) {
-        Navigator.pushReplacementNamed(context, '/admin/dashboard');
+       context.go('/admin/dashboard');
       }
     } catch (e,st) {
       log("error",stackTrace: st,error: e,name: "Google Sign-In");

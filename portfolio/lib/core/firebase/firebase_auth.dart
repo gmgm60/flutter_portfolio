@@ -12,7 +12,10 @@ final authStateChangesProvider = StreamProvider<User?>((ref) {
 
 class FirebaseAuthService {
   final FirebaseAuth _auth;
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final GoogleSignIn _googleSignIn = GoogleSignIn(
+    scopes: ['email'],
+    clientId: '627402656663-ebefcacl1eep1021r0an3g9ufbb0atmu.apps.googleusercontent.com',
+  );
 
   FirebaseAuthService(this._auth);
 
@@ -36,6 +39,7 @@ class FirebaseAuthService {
       if (googleUser == null) throw 'Google Sign In was cancelled';
 
       final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,

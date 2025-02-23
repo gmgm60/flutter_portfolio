@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:portfolio/core/firebase/firebase_service.dart';
 import 'package:portfolio/presentation/features/about/screens/about_screen.dart';
+import 'package:portfolio/presentation/features/admin/screens/admin_dashboard_screen.dart';
 import 'package:portfolio/presentation/features/admin/screens/admin_login_screen.dart';
 import 'package:portfolio/presentation/features/blog/screens/blog_screen.dart';
 import 'package:portfolio/presentation/features/contact/screens/contact_screen.dart';
@@ -44,6 +45,10 @@ final _router = GoRouter(
     GoRoute(
       path: '/admin',
       builder: (context, state) => const AdminLoginScreen(),
+    ),
+    GoRoute(
+      path: '/admin/dashboard',
+      builder: (context, state) => const AdminDashboardScreen(),
     ),
   ],
 );

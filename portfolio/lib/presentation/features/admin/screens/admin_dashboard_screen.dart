@@ -35,68 +35,32 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
           ),
         ],
       ),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          final isDesktop = constraints.maxWidth > 900;
-          final isTablet = constraints.maxWidth > 600 && constraints.maxWidth <= 900;
-
-          if (isDesktop || isTablet) {
-            return Row(
-              children: [
-                NavigationRail(
-                  extended: isDesktop,
-                  selectedIndex: _selectedIndex,
-                  onDestinationSelected: (index) {
-                    setState(() => _selectedIndex = index);
-                  },
-                  labelType: NavigationRailLabelType.all,
-                  destinations: const [
-                    NavigationRailDestination(
-                      icon: Icon(Icons.work),
-                      label: Text('Projects'),
-                    ),
-                    NavigationRailDestination(
-                      icon: Icon(Icons.article),
-                      label: Text('Blog'),
-                    ),
-                    NavigationRailDestination(
-                      icon: Icon(Icons.psychology),
-                      label: Text('Skills'),
-                    ),
-                  ],
-                ),
-                const VerticalDivider(thickness: 1, width: 1),
-                Expanded(child: _pages[_selectedIndex]),
-              ],
-            );
-          }
-
-          return Column(
-            children: [
-              BottomNavigationBar(
-                currentIndex: _selectedIndex,
-                onTap: (index) {
-                  setState(() => _selectedIndex = index);
-                },
-                items: const [
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.work),
-                    label: 'Projects',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.article),
-                    label: 'Blog',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.psychology),
-                    label: 'Skills',
-                  ),
-                ],
+      body: Row(
+        children: [
+          NavigationRail(
+            selectedIndex: _selectedIndex,
+            onDestinationSelected: (index) {
+              setState(() => _selectedIndex = index);
+            },
+           // labelType: NavigationRailLabelType.all,
+            destinations: const [
+              NavigationRailDestination(
+                icon: Icon(Icons.work),
+                label: Text('Projects'),
               ),
-              Expanded(child: _pages[_selectedIndex]),
+              NavigationRailDestination(
+                icon: Icon(Icons.article),
+                label: Text('Blog'),
+              ),
+              NavigationRailDestination(
+                icon: Icon(Icons.psychology),
+                label: Text('Skills'),
+              ),
             ],
-          );
-        },
+          ),
+          const VerticalDivider(thickness: 1, width: 1),
+          Expanded(child: _pages[_selectedIndex]),
+        ],
       ),
     );
   }
