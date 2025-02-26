@@ -1,11 +1,18 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dartz/dartz.dart';
 import 'package:portfolio/core/error/app_error.dart';
-import 'package:portfolio/domain/blog/models/blog_post.dart';
-import 'package:portfolio/presentation/features/blog/providers/blog_providers.dart';
+import 'package:portfolio/data/datasources/impl/firebase_blog_datasource_impl.dart';
+import 'package:portfolio/domain/entities/blog_entity.dart';
+import 'package:portfolio/domain/repositories/blog_repository.dart';
+import 'package:portfolio/data/repositories/blog_repository_impl.dart';
 
-final blogPostsProvider = AutoDisposeFutureProvider<Either<AppError, List<BlogPost>>>((ref) {
-  return ref.watch(blogControllerProvider).getBlogPosts();
+final blogRepositoryProvider = Provider<BlogRepository>((ref) {
+  final dataSource = FirebaseBlogDataSourceImpl();
+  return BlogRepositoryImpl(dataSource);
+});
+
+final blogPostsProvider = AutoDisposeFutureProvider<Either<AppError, List<BlogPostEntity>>>((ref) {
+  return ref.watch(blogControllerProvider).getAllPosts();
 });
 
 final blogControllerProvider = Provider((ref) {
@@ -17,23 +24,38 @@ class BlogController {
 
   BlogController(this._ref);
 
-  Future<Either<AppError, List<BlogPost>>> getBlogPosts() async {
+  Future<Either<AppError, List<BlogPostEntity>>> getAllPosts() async {
     final repository = _ref.read(blogRepositoryProvider);
-    return await repository.getBlogPosts();
+    return await repository.getAllPosts();
   }
 
-  Future<Either<AppError, Unit>> createBlogPost(BlogPost blogPost) async {
+  Future<Either<AppError, BlogPostEntity>> createPost(BlogPostEntity blogPost) async {
     final repository = _ref.read(blogRepositoryProvider);
-    return await repository.createBlogPost(blogPost);
+    return await repository.createPost(blogPost);
   }
 
-  Future<Either<AppError, Unit>> updateBlogPost(BlogPost blogPost) async {
+  Future<Either<AppError, BlogPostEntity>> updatePost(BlogPostEntity blogPost) async {
     final repository = _ref.read(blogRepositoryProvider);
-    return await repository.updateBlogPost(blogPost);
+    return await repository.updatePost(blogPost);
   }
 
-  Future<Either<AppError, Unit>> deleteBlogPost(String id) async {
+  Future<Either<AppError, void>> deletePost(String id) async {
     final repository = _ref.read(blogRepositoryProvider);
-    return await repository.deleteBlogPost(id);
+    return await repository.deletePost(id);
+  }
+
+  Future<Either<AppError, List<BlogPostEntity>>> getPostsByCategory(String categoryId) async {
+    final repository = _ref.read(blogRepositoryProvider);
+    return await repository.getPostsByCategory(categoryId);
+  }
+
+  Future<Either<AppError, List<BlogPostEntity>>> getPostsByTag(String tag) async {
+    final repository = _ref.read(blogRepositoryProvider);
+    return await repository.getPostsByTag(tag);
+  }
+
+  Future<Either<AppError, List<BlogPostEntity>>> searchPosts(String query) async {
+    final repository = _ref.read(blogRepositoryProvider);
+    return await repository.searchPosts(query);
   }
 }
