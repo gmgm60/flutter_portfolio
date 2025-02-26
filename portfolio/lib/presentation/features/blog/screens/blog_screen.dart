@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:portfolio/presentation/common/widgets/app_bar.dart';
+import 'package:portfolio/presentation/features/blog/providers/blog_providers.dart';
 
 class BlogScreen extends ConsumerWidget {
   const BlogScreen({super.key});
@@ -19,20 +20,39 @@ class BlogScreen extends ConsumerWidget {
               style: Theme.of(context).textTheme.headlineLarge,
             ),
             const SizedBox(height: 32),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: _mockBlogPosts.length,
-              itemBuilder: (context, index) {
-                final post = _mockBlogPosts[index];
-                return _BlogPostCard(
-                  title: post.title,
-                  excerpt: post.excerpt,
-                  date: post.date,
-                  imageUrl: post.imageUrl,
-                  onTap: () {
-                    // TODO: Navigate to blog post details
-                  },
+            Consumer(
+              builder: (context, ref, child) {
+                final blogPostsAsync = ref.watch(blogPostsProvider);
+                
+                return blogPostsAsync.when(
+                  data: (posts) => ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: posts.length,
+                    itemBuilder: (context, index) {
+                      final post = posts[index];
+                      return _BlogPostCard(
+                        title: post.title,
+                        excerpt: post.excerpt,
+                        date: post.date,
+                        imageUrl: post.imageUrl,
+                        onTap: () {
+                          // TODO: Navigate to blog post details
+                        },
+                      );
+                    },
+                  ),
+                  loading: () => const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                  error: (error, stackTrace) => Center(
+                    child: Text(
+                      'Error loading blog posts: ${error.toString()}',
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                            color: Colors.red,
+                          ),
+                    ),
+                  ),
                 );
               },
             ),
@@ -118,24 +138,3 @@ class BlogPost {
     required this.imageUrl,
   });
 }
-
-final List<BlogPost> _mockBlogPosts = [
-  BlogPost(
-    title: 'Getting Started with Flutter',
-    excerpt: 'Learn how to build beautiful cross-platform applications with Flutter. This comprehensive guide will walk you through the basics and best practices.',
-    date: DateTime(2024, 2, 15),
-    imageUrl: 'https://picsum.photos/seed/5/800/400',
-  ),
-  BlogPost(
-    title: 'State Management with Riverpod',
-    excerpt: 'Discover the power of Riverpod for state management in Flutter applications. Learn about providers, consumers, and advanced patterns.',
-    date: DateTime(2024, 2, 10),
-    imageUrl: 'https://picsum.photos/seed/6/800/400',
-  ),
-  BlogPost(
-    title: 'Firebase Integration Guide',
-    excerpt: 'Step-by-step tutorial on integrating Firebase services into your Flutter application. Covers authentication, Firestore, and cloud storage.',
-    date: DateTime(2024, 2, 5),
-    imageUrl: 'https://picsum.photos/seed/7/800/400',
-  ),
-];
