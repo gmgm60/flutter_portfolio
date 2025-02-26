@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:portfolio/domain/entities/project.dart';
 
@@ -12,6 +13,7 @@ class ProjectEntity with _$ProjectEntity {
     required String title,
     required String description,
     required List<String> technologies,
+    @JsonKey(fromJson: _timestampToDateTime)
     required DateTime createdAt,
     String? imageUrl,
     String? projectUrl,
@@ -21,6 +23,7 @@ class ProjectEntity with _$ProjectEntity {
   }) = _ProjectEntity;
 
 const ProjectEntity._();
+
 
   factory ProjectEntity.fromJson(Map<String, dynamic> json) =>
       _$ProjectEntityFromJson(json);
@@ -54,3 +57,10 @@ extension ProjectEntityMapper on ProjectEntity {
     );
   }
 }
+
+ DateTime _timestampToDateTime(dynamic timestamp) {
+    if (timestamp is Timestamp) {
+      return timestamp.toDate();
+    }
+    return DateTime.now();
+  }

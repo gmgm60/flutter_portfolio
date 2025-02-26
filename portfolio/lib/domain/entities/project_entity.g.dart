@@ -14,7 +14,7 @@ _$ProjectEntityImpl _$$ProjectEntityImplFromJson(Map<String, dynamic> json) =>
       technologies: (json['technologies'] as List<dynamic>)
           .map((e) => e as String)
           .toList(),
-      createdAt: DateTime.parse(json['createdAt'] as String),
+      createdAt: _timestampToDateTime(json['createdAt']),
       imageUrl: json['imageUrl'] as String?,
       projectUrl: json['projectUrl'] as String?,
       githubUrl: json['githubUrl'] as String?,

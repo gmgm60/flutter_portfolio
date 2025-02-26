@@ -24,6 +24,7 @@ mixin _$ProjectEntity {
   String get title => throw _privateConstructorUsedError;
   String get description => throw _privateConstructorUsedError;
   List<String> get technologies => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: _timestampToDateTime)
   DateTime get createdAt => throw _privateConstructorUsedError;
   String? get imageUrl => throw _privateConstructorUsedError;
   String? get projectUrl => throw _privateConstructorUsedError;
@@ -52,7 +53,7 @@ abstract class $ProjectEntityCopyWith<$Res> {
       String title,
       String description,
       List<String> technologies,
-      DateTime createdAt,
+      @JsonKey(fromJson: _timestampToDateTime) DateTime createdAt,
       String? imageUrl,
       String? projectUrl,
       String? githubUrl,
@@ -144,7 +145,7 @@ abstract class _$$ProjectEntityImplCopyWith<$Res>
       String title,
       String description,
       List<String> technologies,
-      DateTime createdAt,
+      @JsonKey(fromJson: _timestampToDateTime) DateTime createdAt,
       String? imageUrl,
       String? projectUrl,
       String? githubUrl,
@@ -223,20 +224,21 @@ class __$$ProjectEntityImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$ProjectEntityImpl implements _ProjectEntity {
+class _$ProjectEntityImpl extends _ProjectEntity {
   const _$ProjectEntityImpl(
       {required this.id,
       required this.title,
       required this.description,
       required final List<String> technologies,
-      required this.createdAt,
+      @JsonKey(fromJson: _timestampToDateTime) required this.createdAt,
       this.imageUrl,
       this.projectUrl,
       this.githubUrl,
       final List<String>? categories,
       this.featured})
       : _technologies = technologies,
-        _categories = categories;
+        _categories = categories,
+        super._();
 
   factory _$ProjectEntityImpl.fromJson(Map<String, dynamic> json) =>
       _$$ProjectEntityImplFromJson(json);
@@ -256,6 +258,7 @@ class _$ProjectEntityImpl implements _ProjectEntity {
   }
 
   @override
+  @JsonKey(fromJson: _timestampToDateTime)
   final DateTime createdAt;
   @override
   final String? imageUrl;
@@ -337,18 +340,20 @@ class _$ProjectEntityImpl implements _ProjectEntity {
   }
 }
 
-abstract class _ProjectEntity implements ProjectEntity {
+abstract class _ProjectEntity extends ProjectEntity {
   const factory _ProjectEntity(
       {required final String id,
       required final String title,
       required final String description,
       required final List<String> technologies,
+      @JsonKey(fromJson: _timestampToDateTime)
       required final DateTime createdAt,
       final String? imageUrl,
       final String? projectUrl,
       final String? githubUrl,
       final List<String>? categories,
       final bool? featured}) = _$ProjectEntityImpl;
+  const _ProjectEntity._() : super._();
 
   factory _ProjectEntity.fromJson(Map<String, dynamic> json) =
       _$ProjectEntityImpl.fromJson;
@@ -362,6 +367,7 @@ abstract class _ProjectEntity implements ProjectEntity {
   @override
   List<String> get technologies;
   @override
+  @JsonKey(fromJson: _timestampToDateTime)
   DateTime get createdAt;
   @override
   String? get imageUrl;

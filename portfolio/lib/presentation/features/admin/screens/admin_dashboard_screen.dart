@@ -49,7 +49,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
                   onDestinationSelected: (index) {
                     setState(() => _selectedIndex = index);
                   },
-                  labelType: NavigationRailLabelType.all,
+                  //labelType: NavigationRailLabelType.all,
                   destinations: const [
                     NavigationRailDestination(
                       icon: Icon(Icons.work),
