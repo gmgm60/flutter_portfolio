@@ -123,17 +123,10 @@ class _ProjectsManagement extends ConsumerWidget {
               ),
               ElevatedButton.icon(
                 onPressed: () {
-                  // TODO: Show project form dialog
-                  final project = Project(
-                    id: '',
-                    title: 'New Project',
-                    description: 'Project description',
-                    imageUrl: 'https://via.placeholder.com/300',
-                    technologies: ['Flutter', 'Firebase'],
-                    githubUrl: 'https://github.com',
-                    createdAt: DateTime.now(),
+                  showDialog(
+                    context: context,
+                    builder: (context) => _AddProjectDialog(),
                   );
-                  ref.read(projectControllerProvider).createProject(project);
                 },
                 icon: const Icon(Icons.add),
                 label: const Text('Add Project'),
@@ -252,6 +245,159 @@ class _SkillsManagement extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _AddProjectDialog extends ConsumerStatefulWidget {
+  const _AddProjectDialog();
+
+  @override
+  ConsumerState<_AddProjectDialog> createState() => _AddProjectDialogState();
+}
+
+class _AddProjectDialogState extends ConsumerState<_AddProjectDialog> {
+  final _formKey = GlobalKey<FormState>();
+  final _titleController = TextEditingController();
+  final _descriptionController = TextEditingController();
+  final _imageUrlController = TextEditingController();
+  final _githubUrlController = TextEditingController();
+  final _technologiesController = TextEditingController();
+  bool _isLoading = false;
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _descriptionController.dispose();
+    _imageUrlController.dispose();
+    _githubUrlController.dispose();
+    _technologiesController.dispose();
+    super.dispose();
+  }
+
+  void _submitForm() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() => _isLoading = true);
+
+    try {
+      final project = Project(
+        id: '',
+        title: _titleController.text.trim(),
+        description: _descriptionController.text.trim(),
+        imageUrl: _imageUrlController.text.trim(),
+        technologies: _technologiesController.text.split(',').map((e) => e.trim()).toList(),
+        githubUrl: _githubUrlController.text.trim(),
+        createdAt: DateTime.now(),
+      );
+
+      await ref.read(projectControllerProvider).createProject(project);
+      if (mounted) Navigator.of(context).pop();
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Add New Project'),
+      content: SingleChildScrollView(
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                controller: _titleController,
+                decoration: const InputDecoration(labelText: 'Title'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a title';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _descriptionController,
+                decoration: const InputDecoration(labelText: 'Description'),
+                maxLines: 3,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a description';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _imageUrlController,
+                decoration: const InputDecoration(labelText: 'Image URL'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter an image URL';
+                  }
+                  if (Uri.tryParse(value)?.hasAbsolutePath ?? false) {
+                    return 'Please enter a valid URL';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _technologiesController,
+                decoration: const InputDecoration(
+                  labelText: 'Technologies',
+                  helperText: 'Comma-separated list of technologies',
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter at least one technology';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _githubUrlController,
+                decoration: const InputDecoration(labelText: 'GitHub URL'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a GitHub URL';
+                  }
+                  if (Uri.tryParse(value)?.hasAbsolutePath ?? false) {
+                    return 'Please enter a valid URL';
+                  }
+                  return null;
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: _isLoading ? null : () => Navigator.of(context).pop(),
+          child: const Text('Cancel'),
+        ),
+        ElevatedButton(
+          onPressed: _isLoading ? null : _submitForm,
+          child: _isLoading
+              ? const SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : const Text('Add Project'),
+        ),
+      ],
     );
   }
 }
