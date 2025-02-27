@@ -123,17 +123,10 @@ class _ProjectsManagement extends ConsumerWidget {
               ),
               ElevatedButton.icon(
                 onPressed: () {
-                  // TODO: Show project form dialog
-                  final project = Project(
-                    id: '',
-                    title: 'New Project',
-                    description: 'Project description',
-                    imageUrl: 'https://via.placeholder.com/300',
-                    technologies: ['Flutter', 'Firebase'],
-                    githubUrl: 'https://github.com',
-                    createdAt: DateTime.now(),
+                  showDialog(
+                    context: context,
+                    builder: (context) => _ProjectFormDialog(),
                   );
-                  ref.read(projectControllerProvider).createProject(project);
                 },
                 icon: const Icon(Icons.add),
                 label: const Text('Add Project'),
@@ -252,6 +245,141 @@ class _SkillsManagement extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _ProjectFormDialog extends ConsumerStatefulWidget {
+  @override
+  ConsumerState<_ProjectFormDialog> createState() => _ProjectFormDialogState();
+}
+
+class _ProjectFormDialogState extends ConsumerState<_ProjectFormDialog> {
+  final _formKey = GlobalKey<FormState>();
+  late String _title;
+  late String _description;
+  late String _imageUrl;
+  late String _githubUrl;
+  final List<String> _technologies = [];
+  final _techController = TextEditingController();
+
+  void _submitForm() {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      final project = Project(
+        id: '',
+        title: _title,
+        description: _description,
+        imageUrl: _imageUrl,
+        technologies: _technologies,
+        githubUrl: _githubUrl,
+        createdAt: DateTime.now(),
+      );
+      ref.read(projectControllerProvider).createProject(project);
+      Navigator.of(context).pop();
+    }
+  }
+
+  void _addTechnology() {
+    final tech = _techController.text.trim();
+    if (tech.isNotEmpty && !_technologies.contains(tech)) {
+      setState(() {
+        _technologies.add(tech);
+        _techController.clear();
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _techController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Add New Project'),
+      content: SingleChildScrollView(
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                decoration: const InputDecoration(labelText: 'Title'),
+                validator: (value) =>
+                    value?.isEmpty ?? true ? 'Please enter a title' : null,
+                onSaved: (value) => _title = value!,
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                decoration: const InputDecoration(labelText: 'Description'),
+                maxLines: 3,
+                validator: (value) =>
+                    value?.isEmpty ?? true ? 'Please enter a description' : null,
+                onSaved: (value) => _description = value!,
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                decoration: const InputDecoration(labelText: 'Image URL'),
+                validator: (value) =>
+                    value?.isEmpty ?? true ? 'Please enter an image URL' : null,
+                onSaved: (value) => _imageUrl = value!,
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                decoration: const InputDecoration(labelText: 'GitHub URL'),
+                validator: (value) =>
+                    value?.isEmpty ?? true ? 'Please enter a GitHub URL' : null,
+                onSaved: (value) => _githubUrl = value!,
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: _techController,
+                      decoration: const InputDecoration(
+                        labelText: 'Technologies',
+                        hintText: 'Add technologies used',
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.add),
+                    onPressed: _addTechnology,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                children: _technologies
+                    .map((tech) => Chip(
+                          label: Text(tech),
+                          onDeleted: () {
+                            setState(() {
+                              _technologies.remove(tech);
+                            });
+                          },
+                        ))
+                    .toList(),
+              ),
+            ],
+          ),
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Cancel'),
+        ),
+        ElevatedButton(
+          onPressed: _submitForm,
+          child: const Text('Save'),
+        ),
+      ],
     );
   }
 }
