@@ -29,6 +29,14 @@
             "request": "launch",
             "type": "dart",
             "flutterMode": "release"
+        },
+        {
+            "name": "portfolio (web wasm)",
+            "cwd": "portfolio",
+            "request": "launch",
+            "type": "dart",
+            "args": ["--wasm"],
+            "deviceId": "chrome"
         }
     ]
 }
